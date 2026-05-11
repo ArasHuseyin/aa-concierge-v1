@@ -1,0 +1,74 @@
+# Shopify App configuration. AppApprove syncs this file to your Partner
+# Dashboard on every deploy. Don't edit client_id by hand — it's set when
+# AppApprove provisions the app entry (Sprint 30: Partner-API integration).
+
+name = "AA Concierge V1"
+handle = "aa-concierge-v1"
+client_id = ""
+application_url = "https://aa-concierge-v1.appapprove.app"
+embedded = true
+
+[access_scopes]
+# Comma-separated list of API scopes. Match these to what your code actually
+# uses — the AppApprove pre-submission checker flags scope drift.
+scopes = "read_products"
+
+[auth]
+redirect_urls = [
+  "https://aa-concierge-v1.appapprove.app/auth/callback"
+]
+
+[webhooks]
+api_version = "2025-01"
+
+  [[webhooks.subscriptions]]
+  topics = [ "customers/data_request" ]
+  uri = "/webhooks/customers/data_request"
+
+  [[webhooks.subscriptions]]
+  topics = [ "customers/redact" ]
+  uri = "/webhooks/customers/redact"
+
+  [[webhooks.subscriptions]]
+  topics = [ "shop/redact" ]
+  uri = "/webhooks/shop/redact"
+
+  [[webhooks.subscriptions]]
+  topics = [ "app_subscriptions/update" ]
+  uri = "/webhooks/app_subscriptions/update"
+  [[webhooks.subscriptions]]
+  topics = [ "products/create" ]
+  uri = "/webhooks/products-create"
+  [[webhooks.subscriptions]]
+  topics = [ "products/update" ]
+  uri = "/webhooks/products-update"
+  [[webhooks.subscriptions]]
+  topics = [ "products/delete" ]
+  uri = "/webhooks/products-delete"
+  [[webhooks.subscriptions]]
+  topics = [ "orders/create" ]
+  uri = "/webhooks/orders-create"
+  [[webhooks.subscriptions]]
+  topics = [ "orders/updated" ]
+  uri = "/webhooks/orders-updated"
+  [[webhooks.subscriptions]]
+  topics = [ "orders/cancelled" ]
+  uri = "/webhooks/orders-cancelled"
+  [[webhooks.subscriptions]]
+  topics = [ "orders/delete" ]
+  uri = "/webhooks/orders-delete"
+  [[webhooks.subscriptions]]
+  topics = [ "customers/create" ]
+  uri = "/webhooks/customers-create"
+  [[webhooks.subscriptions]]
+  topics = [ "customers/update" ]
+  uri = "/webhooks/customers-update"
+  [[webhooks.subscriptions]]
+  topics = [ "customers/delete" ]
+  uri = "/webhooks/customers-delete"
+
+[pos]
+embedded = false
+
+[build]
+include_config_on_deploy = true
