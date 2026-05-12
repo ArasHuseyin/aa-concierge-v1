@@ -43,14 +43,27 @@ export interface Env {
   // To activate: add the matching block to wrangler.toml:
   //   [[d1_databases]] / [[r2_buckets]] / [[queues.producers]] /
   //   [[durable_objects.bindings]]
-  D1?: D1Database;
-  R2?: R2Bucket;
-  QUEUE?: Queue;
   // Phase 3.7 — Cloudflare D1 binding for the managed sync layer.
   D1?: import("@cloudflare/workers-types").D1Database;
+  R2?: R2Bucket;
+  QUEUE?: Queue;
   // Bearer token gating /sync/status. Set by the AppApprove deploy
   // pipeline; without it the endpoint returns 503.
   SYNC_STATUS_TOKEN?: string;
   // (Offline session enumeration uses the existing SESSIONS KV
   // declared on the base Env interface — no additional binding needed.)
+
+  // AA Concierge V1 — outbound transactional email via Resend. Used for
+  // dunning notices on past-due subscriptions and post-purchase review
+  // requests. Without it bound, app/lib/email.server.ts no-ops so the
+  // app keeps working in environments where email isn't configured yet.
+  RESEND_API_KEY?: string;
+  // From: address used on outbound transactional email. Defaults to
+  // "noreply@<shop>" when unset; merchants override per-shop via the
+  // dashboard settings panel.
+  EMAIL_FROM?: string;
+  // CF Queue producer binding — drives async outbound jobs (subscription
+  // billing, dunning retries, review-request sends). Optional: feature
+  // code falls back to inline dispatch when the queue isn't bound.
+  CONCIERGE_QUEUE?: Queue;
 }

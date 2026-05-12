@@ -44,8 +44,9 @@ APPAPPROVE_PROJECT_SLUG = "aa-concierge-v1"
 
 [triggers]
 crons = [
-  "*/5 * * * *",  # sync backfill driver (Phase 3.7 B)
-  "0 8 * * *",    # daily GDPR deadline scan
+  "*/5 * * * *",   # sync backfill driver (Phase 3.7 B)
+  "0 8 * * *",     # daily GDPR deadline scan
+  "*/10 * * * *",  # AA Concierge dispatcher — review emails + sub billing
 ]
 
 # CF Cron Triggers — uncomment + add schedules here, then mirror them in
@@ -55,14 +56,14 @@ crons = [
 
 # CF Queues — define a producer + consumer for each queue you use. The
 # AppApprove deploy pipeline auto-provisions the queue on first deploy.
-# [[queues.producers]]
-# binding = "MY_QUEUE"
-# queue = "aa-concierge-v1-jobs"
+[[queues.producers]]
+binding = "CONCIERGE_QUEUE"
+queue = "aa-concierge-v1-jobs"
 
-# [[queues.consumers]]
-# queue = "aa-concierge-v1-jobs"
-# max_batch_size = 10
-# max_batch_timeout = 5
+[[queues.consumers]]
+queue = "aa-concierge-v1-jobs"
+max_batch_size = 10
+max_batch_timeout = 5
 
 
 # AppApprove sync layer (Phase 3.7) — D1 binding for the local mirror of

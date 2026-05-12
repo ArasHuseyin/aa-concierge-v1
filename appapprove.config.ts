@@ -24,6 +24,7 @@ const config: AppApproveConfig = {
     "orders/updated": "~/webhooks/orders-upsert",
     "orders/cancelled": "~/webhooks/orders-upsert",
     "orders/delete": "~/webhooks/orders-delete",
+    "orders/paid": "~/webhooks/orders-paid",
     "customers/create": "~/webhooks/customers-upsert",
     "customers/update": "~/webhooks/customers-upsert",
     "customers/delete": "~/webhooks/customers-delete",
@@ -43,6 +44,16 @@ const config: AppApproveConfig = {
     // and processes one page per resource per shop. Mirror the schedule
     // in wrangler.toml [triggers] crons.
     "*/5 * * * *": "~/crons/sync-backfill",
+    // AA Concierge V1 — periodic dispatcher for due review-request
+    // emails + subscription billing jobs. Runs every 10 minutes so it
+    // doesn't share the 30s tick budget with sync-backfill.
+    "*/10 * * * *": "~/crons/concierge-dispatch",
+  },
+  queues: {
+    "aa-concierge-v1-jobs": {
+      producer: true,
+      consumer: "~/queues/concierge-jobs",
+    },
   },
   env: {
     // Public env vars are exposed to the browser. Secrets stay server-only.
