@@ -176,11 +176,11 @@ jobs:
             echo "::group::Provision D1 binding=$binding name=$name"
             OUT=$(pnpm exec wrangler d1 create "$name" 2>&1 || true)
             echo "$OUT"
-            UUID=$(echo "$OUT" | grep -oE '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}' | head -1)
+            UUID=$(echo "$OUT" | grep -oE '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}' | head -1) || true
             if [ -z "$UUID" ]; then
               echo "Create did not return a UUID; database may already exist. Listing…"
               LIST=$(pnpm exec wrangler d1 list --json 2>/dev/null || echo '[]')
-              UUID=$(echo "$LIST" | jq -r --arg n "$name" '.[] | select(.name == $n) | .uuid' 2>/dev/null | head -1)
+              UUID=$(echo "$LIST" | jq -r --arg n "$name" '.[] | select(.name == $n) | .uuid' 2>/dev/null | head -1) || true
             fi
             if [ -z "$UUID" ] || [ "$UUID" = "null" ]; then
               echo "::error::Could not provision or look up D1 database '$name'"
