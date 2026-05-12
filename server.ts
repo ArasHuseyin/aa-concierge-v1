@@ -24,4 +24,17 @@ export default {
       } as never,
     });
   },
+
+  // CF Queues consumer. Required because wrangler.toml declares a
+  // [[queues.consumers]] block — without a matching `queue` export the
+  // CF API rejects the deploy with code 11001 ("Worker has consumer
+  // bindings but no queue() handler"). Real job dispatch lives in
+  // app/queues/concierge-jobs.ts; the cron currently calls the inline
+  // fallback, so this placeholder just acks the batch.
+  async queue(batch: MessageBatch<unknown>, _env: unknown, _ctx: ExecutionContext) {
+    console.log("[queue] received batch of " + batch.messages.length + " message(s) from " + batch.queue);
+    for (const message of batch.messages) {
+      message.ack();
+    }
+  },
 };
